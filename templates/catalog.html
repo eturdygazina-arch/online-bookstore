@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Каталог</h1>
+        <p class="text-muted mb-0">Кітаптарды жанр, баспа немесе іздеу арқылы таңдаңыз</p>
+    </div>
+</div>
+
+<div class="card mb-4 filter-card">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('catalog') }}" class="row g-3">
+            <div class="col-md-4"><input type="text" name="search" value="{{ search }}" class="form-control" placeholder="Атауы, авторы немесе баспасы"></div>
+            <div class="col-md-2"><select name="genre" class="form-select"><option value="all">Барлық жанр</option>{% for g in genres %}<option value="{{ g }}" {% if genre == g %}selected{% endif %}>{{ g }}</option>{% endfor %}</select></div>
+            <div class="col-md-2"><select name="publisher" class="form-select"><option value="all">Барлық баспа</option>{% for p in publishers %}<option value="{{ p }}" {% if publisher == p %}selected{% endif %}>{{ p }}</option>{% endfor %}</select></div>
+            <div class="col-md-2"><select name="sort" class="form-select"><option value="created_at" {% if sort == 'created_at' %}selected{% endif %}>Жаңасы</option><option value="price" {% if sort == 'price' %}selected{% endif %}>Баға</option><option value="popularity" {% if sort == 'popularity' %}selected{% endif %}>Танымал</option><option value="rating" {% if sort == 'rating' %}selected{% endif %}>Рейтинг</option></select></div>
+            <div class="col-md-1"><select name="order" class="form-select"><option value="desc" {% if order == 'desc' %}selected{% endif %}>↓</option><option value="asc" {% if order == 'asc' %}selected{% endif %}>↑</option></select></div>
+            <div class="col-md-1"><button class="btn btn-dark w-100" type="submit"><i class="fas fa-search"></i></button></div>
+        </form>
+    </div>
+</div>
+
+{% if books %}
+<div class="row g-4">
+    {% for book in books %}
+    <div class="col-lg-3 col-md-4 col-sm-6">
+        <div class="book-card zein-book-card">
+            {% if book.old_price and book.old_price > book.price %}<span class="discount-badge">-{{ (((book.old_price - book.price) / book.old_price) * 100)|round|int }}%</span>{% endif %}
+            <a href="{{ url_for('book_detail', book_id=book._id) }}"><img src="{{ book.image_url }}" alt="{{ book.title }}" onerror="this.src='https://placehold.co/300x420?text=Zein+Book'"></a>
+            <div class="book-card-body">
+                <h5 class="book-title">{{ book.title }}</h5>
+                <p class="book-author">{{ book.author }}</p>
+                <p class="small text-muted mb-1">{{ book.genre }} · {{ book.publisher or 'Zein баспасы' }}</p>
+                <div>{% if book.old_price %}<span class="old-price me-2">{{ book.old_price|format_price }}</span>{% endif %}<span class="book-price">{{ book.price|format_price }}</span></div>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('book_detail', book_id=book._id) }}" class="btn btn-sm btn-outline-primary flex-fill">Қарау</a>
+                    {% if current_user.is_authenticated and current_user.role != 'admin' and book.stock > 0 %}
+                    <form action="{{ url_for('add_to_cart', book_id=book._id) }}" method="POST"><input type="hidden" name="quantity" value="1"><button class="btn btn-sm btn-primary"><i class="fas fa-cart-plus"></i></button></form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state text-center py-5"><i class="fas fa-search fa-4x text-muted mb-3"></i><h4>Кітап табылмады</h4><p>Басқа іздеу сөзін немесе фильтрді таңдаңыз.</p></div>
+{% endif %}
+
+{% if total_pages > 1 %}<nav class="mt-4"><ul class="pagination justify-content-center">{% for p in range(1, total_pages+1) %}<li class="page-item {{ 'active' if p==page else '' }}"><a class="page-link" href="{{ url_for('catalog', page=p, search=search, genre=genre, publisher=publisher, sort=sort, order=order) }}">{{ p }}</a></li>{% endfor %}</ul></nav>{% endif %}
+{% endblock %}

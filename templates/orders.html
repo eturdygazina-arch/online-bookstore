@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="orders-header mb-4"><h1>Менің тапсырыстарым</h1></div>
+
+{% if orders and orders|length > 0 %}
+    {% for order in orders %}
+    <div class="card order-card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div><strong>Тапсырыс #{{ order.order_code or (order._id|short_id('ORDER')) }}</strong><small class="text-muted ms-3">{{ order.created_at.strftime('%d.%m.%Y %H:%M') if order.created_at else 'Күні көрсетілмеген' }}</small></div>
+            <span class="status-badge">{{ order.status }}</span>
+        </div>
+        <div class="card-body">
+            {% if order.status == 'Пунктке келді' %}
+            <div class="alert alert-success">Тапсырысыңыз пунктке келді. Алғаннан кейін растаңыз.</div>
+            <form action="{{ url_for('confirm_received', order_id=order._id) }}" method="POST" class="mb-3"><button type="submit" class="btn btn-success">Алдым</button></form>
+            {% endif %}
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead><tr><th>Кітап</th><th>Баға</th><th>Саны</th><th>Сома</th></tr></thead>
+                    <tbody>
+                        {% for item in order['items'] %}
+                        <tr><td>{{ item.title }}</td><td>{{ item.price|format_price }}</td><td>{{ item.quantity }}</td><td>{{ (item.price * item.quantity)|format_price }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr><td colspan="3" class="text-end"><strong>Сома:</strong></td><td>{{ order.subtotal|format_price }}</td></tr>
+                        <tr><td colspan="3" class="text-end"><strong>Бонус қолданылды:</strong></td><td class="text-success">-{{ order.used_bonuses|format_price }}</td></tr>
+                        <tr class="table-active"><td colspan="3" class="text-end"><strong>Барлығы:</strong></td><td><strong class="text-primary">{{ order.final_price|format_price }}</strong></td></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-state text-center py-5"><i class="fas fa-shopping-bag fa-4x text-muted mb-3"></i><h4>Әзірге тапсырыс жоқ</h4><p>Каталогқа өтіп, кітап таңдаңыз</p><a href="{{ url_for('catalog') }}" class="btn btn-primary mt-3">Каталогқа өту</a></div>
+{% endif %}
+{% endblock %}

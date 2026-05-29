@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Тапсырысты рәсімдеу</h1>
+    <a href="{{ url_for('cart') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Артқа
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3">Төлем деректері</h4>
+
+                <form method="POST" id="checkoutForm">
+
+                    {% if saved_cards %}
+                    <div class="saved-card-area mb-4">
+                        <h5 class="mb-3">Сақталған карталар</h5>
+
+                        {% for card in saved_cards %}
+                        <label class="saved-card-box">
+                            <input 
+                                type="radio" 
+                                name="saved_card_id" 
+                                value="{{ card._id }}" 
+                                class="saved-card-radio"
+                            >
+                            <div class="saved-card-visual">
+                                <div>
+                                    <strong>**** **** **** {{ card.last4 }}</strong>
+                                    <small>{{ card.card_holder }}</small>
+                                </div>
+                                <span>{{ card.expiry }}</span>
+                            </div>
+                        </label>
+                        {% endfor %}
+
+                        <div class="form-check mt-3">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                name="use_saved_card" 
+                                id="useSavedCard"
+                            >
+                            <label class="form-check-label" for="useSavedCard">
+                                Осы сақталған картаны қолдану
+                            </label>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div id="newCardBlock">
+                        <h5 class="mb-3">Жаңа карта</h5>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Карта нөмірі</label>
+                                <input 
+                                    name="card_number" 
+                                    id="cardNumber"
+                                    class="form-control" 
+                                    placeholder="0000 0000 0000 0000" 
+                                    maxlength="19"
+                                >
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Мерзімі</label>
+                                <input 
+                                    name="expiry" 
+                                    id="cardExpiry"
+                                    class="form-control" 
+                                    placeholder="MM/YY" 
+                                    maxlength="5"
+                                >
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">CVV</label>
+                                <input 
+                                    name="cvv" 
+                                    id="cardCvv"
+                                    class="form-control" 
+                                    placeholder="123" 
+                                    maxlength="3"
+                                >
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Карта иесі</label>
+                                <input 
+                                    name="card_holder" 
+                                    class="form-control" 
+                                    value="{{ current_user.name }}"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-3">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                name="save_card" 
+                                id="saveCard"
+                            >
+                            <label class="form-check-label" for="saveCard">
+                                Картаны сақтау
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="form-check mb-2">
+                        <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            name="use_bonuses" 
+                            id="useBonuses"
+                        >
+                        <label class="form-check-label" for="useBonuses">
+                            Бонустарды қолдану: {{ available_bonuses|format_price }}
+                        </label>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input 
+                            class="form-check-input" 
+                            type="checkbox" 
+                            id="useCertificate"
+                        >
+                        <label class="form-check-label" for="useCertificate">
+                            Сертификатты қолдану
+                        </label>
+                    </div>
+
+                    <div id="certificateBox" class="certificate-check-box d-none">
+                        <label class="form-label">Сертификат нөмірі</label>
+                        <div class="input-group">
+                            <input 
+                                name="certificate_code" 
+                                id="certificateCode" 
+                                class="form-control" 
+                                placeholder="ZEIN-0001"
+                            >
+                            <button 
+                                type="button" 
+                                class="btn btn-outline-primary" 
+                                id="checkCertificateBtn"
+                            >
+                                Тексеру
+                            </button>
+                        </div>
+                        <div id="certificateResult" class="small mt-2"></div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg w-100 mt-4">
+                        <i class="fas fa-credit-card me-2"></i>
+                        Төлеу
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card sticky-top" style="top:100px">
+            <div class="card-body">
+                <h4>Сіздің тапсырысыңыз</h4>
+
+                {% for item in items %}
+                <div class="d-flex justify-content-between border-bottom py-2">
+                    <span>{{ item.title }} × {{ item.quantity }}</span>
+                    <strong>{{ (item.price * item.quantity)|format_price }}</strong>
+                </div>
+                {% endfor %}
+
+                <div class="d-flex justify-content-between mt-3 fs-5">
+                    <span>Барлығы:</span>
+                    <strong id="checkoutTotal" data-subtotal="{{ subtotal }}">
+                        {{ subtotal|format_price }}
+                    </strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.saved-card-box {
+    display: block;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+
+.saved-card-radio {
+    display: none;
+}
+
+.saved-card-visual {
+    border: 2px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 16px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #fff7ed, #ffffff);
+    transition: 0.2s ease;
+}
+
+.saved-card-visual small {
+    display: block;
+    color: #777;
+    margin-top: 4px;
+}
+
+.saved-card-radio:checked + .saved-card-visual {
+    border-color: #b7791f;
+    box-shadow: 0 8px 22px rgba(183, 121, 31, 0.18);
+    transform: translateY(-2px);
+}
+
+.certificate-check-box {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+    background: #fffaf0;
+}
+</style>
+
+<script>
+const useSavedCard = document.getElementById('useSavedCard');
+const newCardBlock = document.getElementById('newCardBlock');
+
+if (useSavedCard && newCardBlock) {
+    useSavedCard.addEventListener('change', function () {
+        if (this.checked) {
+            newCardBlock.style.display = 'none';
+        } else {
+            newCardBlock.style.display = 'block';
+        }
+    });
+}
+
+const cardNumber = document.getElementById('cardNumber');
+if (cardNumber) {
+    cardNumber.addEventListener('input', function () {
+        let value = this.value.replace(/\D/g, '').substring(0, 16);
+        this.value = value.replace(/(.{4})/g, '$1 ').trim();
+    });
+}
+
+const cardExpiry = document.getElementById('cardExpiry');
+if (cardExpiry) {
+    cardExpiry.addEventListener('input', function () {
+        let value = this.value.replace(/\D/g, '').substring(0, 4);
+        if (value.length >= 3) {
+            value = value.substring(0, 2) + '/' + value.substring(2);
+        }
+        this.value = value;
+    });
+}
+
+const cardCvv = document.getElementById('cardCvv');
+if (cardCvv) {
+    cardCvv.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '').substring(0, 3);
+    });
+}
+
+const useCertificate = document.getElementById('useCertificate');
+const certificateBox = document.getElementById('certificateBox');
+
+if (useCertificate && certificateBox) {
+    useCertificate.addEventListener('change', function () {
+        certificateBox.classList.toggle('d-none', !this.checked);
+    });
+}
+</script>
+{% endblock %}

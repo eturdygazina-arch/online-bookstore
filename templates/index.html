@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% macro book_card(book, small=False) %}
+<div class="book-card zein-book-card">
+    {% if book.old_price and book.old_price > book.price %}<span class="discount-badge">-{{ (((book.old_price - book.price) / book.old_price) * 100)|round|int }}%</span>{% endif %}
+    <a href="{{ url_for('book_detail', book_id=book._id) }}" class="book-cover-link">
+        <img src="{{ book.image_url }}" alt="{{ book.title }}" onerror="this.src='https://placehold.co/300x420?text=Zein+Book'">
+    </a>
+    <div class="book-card-body">
+        <h5 class="book-title">{{ book.title }}</h5>
+        <p class="book-author">{{ book.author }}</p>
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="book-price">{{ book.price|format_price }}</span>
+            {% if book.old_price %}<span class="old-price">{{ book.old_price|format_price }}</span>{% endif %}
+        </div>
+        {% if current_user.is_authenticated and current_user.role != 'admin' %}
+        <form action="{{ url_for('add_to_cart', book_id=book._id) }}" method="POST">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="btn btn-sm btn-primary w-100">Себетке қосу</button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('book_detail', book_id=book._id) }}" class="btn btn-sm btn-outline-primary w-100">Қарау</a>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+{% block content %}
+<div class="zein-hero mb-5">
+    <div class="hero-text">
+        <span class="hero-label">Zein кітап дүкені</span>
+        <h1>Өзіңізге сай кітап таңдаңыз</h1>
+        <p>Қазақ әдебиеті, әлем классикасы, бизнес, психология және балалар кітаптары бір жерде.</p>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('catalog') }}" class="btn btn-dark btn-lg">Барлығын қарау</a>
+            <a href="#recommend" class="btn btn-outline-dark btn-lg">Ұсыныстар</a>
+        </div>
+    </div>
+    <div class="hero-books">
+        {% for book in recommended_books[:3] %}
+        <img src="{{ book.image_url }}" alt="{{ book.title }}" onerror="this.src='https://placehold.co/220x320?text=Book'">
+        {% endfor %}
+    </div>
+</div>
+
+<section class="mb-5 zein-feature-slider">
+    <div id="featureCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="feature-slide">
+                    <div>
+                        <h2>Фантастика әлемін ашыңыз</h2>
+                        <p>Ғарыш, болашақ технологиялар және ерекше оқиғаларға толы кітаптар.</p>
+                        <a href="{{ url_for('catalog', genre='Фантастика') }}" class="btn btn-dark">Фантастиканы қарау</a>
+                    </div>
+                    <div class="feature-books-stack">
+                        {% for book in recommended_books if book.genre == 'Фантастика' %}
+                            {% if loop.index <= 3 %}<img src="{{ book.image_url }}" onerror="this.src='https://placehold.co/220x320?text=Book'">{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="feature-slide">
+                    <div>
+                        <h2>Бестселлерлерді оқыңыз</h2>
+                        <p>Оқырмандар жиі сатып алатын және жоғары бағалайтын кітаптар.</p>
+                        <a href="{{ url_for('catalog', sort='popularity', order='desc') }}" class="btn btn-dark">Танымал кітаптар</a>
+                    </div>
+                    <div class="feature-books-stack">
+                        {% for book in popular_books[:3] %}<img src="{{ book.image_url }}" onerror="this.src='https://placehold.co/220x320?text=Book'">{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#featureCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+        <button class="carousel-control-next" type="button" data-bs-target="#featureCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+    </div>
+</section>
+
+<section id="recommend" class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-title">Өз талғамыңызға сай кітап таңдаңыз</h2>
+        <a href="{{ url_for('catalog') }}" class="btn btn-dark">Барлығын қарау</a>
+    </div>
+    <div class="book-row-scroll">
+        {% for book in recommended_books %}
+        <div class="book-scroll-item">{{ book_card(book) }}</div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="bundle-section mb-5">
+    <h2>Пайдалы топтамалар</h2>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="bundle-card">
+                <div class="bundle-images">
+                    {% for book in popular_books[:3] %}<img src="{{ book.image_url }}" onerror="this.src='https://placehold.co/170x240?text=Book'">{% endfor %}
+                </div>
+                <div>
+                    <div class="bundle-badge">Кез келген 4 кітап — 20 000 ₸</div>
+                    <h4>Классика топтамасы</h4>
+                    <p>Үй кітапханасына лайық таңдаулы шығармалар.</p>
+                    <a href="{{ url_for('catalog', genre='Классика') }}" class="btn btn-dark">Топтаманы қарау</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="bundle-card">
+                <div class="bundle-images">
+                    {% for book in new_books[:3] %}<img src="{{ book.image_url }}" onerror="this.src='https://placehold.co/170x240?text=Book'">{% endfor %}
+                </div>
+                <div>
+                    <div class="bundle-badge">Кез келген 3 кітап — 15 000 ₸</div>
+                    <h4>Жаңа кітаптар</h4>
+                    <p>Жаңа түскен кітаптарды тиімді бағамен алыңыз.</p>
+                    <a href="{{ url_for('catalog') }}" class="btn btn-dark">Қарау</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="section-title">Жанрлар</h2>
+    <div class="genre-showcase-grid">
+        {% for item in genres_showcase %}
+        <a href="{{ url_for('catalog', genre=item.name) }}" class="genre-showcase-card">
+            <div class="genre-mini-books">
+                {% for b in item.books %}<img src="{{ b.image_url }}" onerror="this.src='https://placehold.co/90x130?text=Book'">{% endfor %}
+            </div>
+            <h5>{{ item.name }}</h5>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="section-title">Баспалар</h2>
+    <div class="publisher-grid">
+        {% for publisher in publishers %}
+        <a href="{{ url_for('catalog', publisher=publisher) }}" class="publisher-card">{{ publisher }}</a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="mb-5">
+    <h2 class="section-title">Сұраныс бойынша танымал</h2>
+    <div class="row g-4">
+        {% for book in popular_books %}
+        <div class="col-lg-3 col-md-4 col-sm-6">{{ book_card(book) }}</div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="certificate-section mb-5">
+    <div class="certificate-visual">
+        <div class="gift-card gift-card-1">Zein<br><b>5 000 ₸</b></div>
+        <div class="gift-card gift-card-2">Сертификат</div>
+    </div>
+    <div>
+        <h2>Сыйлық сертификаты</h2>
+        <p>Жақын адамыңызға кітап таңдауға мүмкіндік беріңіз. Соманы таңдап, тілек жазыңыз.</p>
+        {% if current_user.is_authenticated and current_user.role != 'admin' %}
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#certificateModal">Сертификат алу</button>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn btn-dark">Кіру</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="language-section mb-5">
+    <div class="language-head">
+        <h2>Тіл курстары</h2>
+        <p>Өзіңізге керек тіл курсын таңдаңыз</p>
+    </div>
+    <div class="language-grid">
+        {% for lang, months in [('Қазақ тілі','2 ай'), ('Ағылшын тілі','3 ай'), ('Түрік тілі','2 ай'), ('Қытай тілі','3 ай'), ('Корей тілі','3 ай'), ('Француз тілі','3 ай')] %}
+        <div class="language-card">
+            <h4>{{ lang }}</h4>
+            <p>Аптасына: <b>3 сабақ</b><br>Ұзақтығы: <b>{{ months }}</b></p>
+            {% if current_user.is_authenticated and current_user.role != 'admin' %}
+            <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#courseModal" data-language="{{ lang }}">Жазылу</button>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-dark btn-sm">Жазылу</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="modal fade" id="certificateModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ url_for('gift_certificate') }}" method="POST">
+                <div class="modal-header"><h5 class="modal-title">Сертификатты себетке қосу</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <label class="form-label">Сома</label>
+                    <select name="amount" class="form-select mb-3">
+                        <option value="5000">5 000 ₸</option><option value="10000">10 000 ₸</option><option value="15000">15 000 ₸</option><option value="20000">20 000 ₸</option>
+                    </select>
+                    <input name="receiver" class="form-control mb-3" placeholder="Кімге арналған?">
+                    <textarea name="wish" class="form-control" rows="3" placeholder="Тілек мәтіні"></textarea>
+                </div>
+                <div class="modal-footer"><button class="btn btn-dark" type="submit">Себетке қосу</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="courseModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ url_for('language_course') }}" method="POST">
+                <div class="modal-header"><h5 class="modal-title">Тіл курсына жазылу</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <input type="hidden" name="language" id="courseLanguage">
+                    <p class="text-muted">Курс: <b id="courseLanguageText"></b></p>
+                    <label class="form-label">Оқу форматы</label>
+                    <select name="format" class="form-select mb-3"><option>Топтық сабақ</option><option>Жеке сабақ</option><option>Онлайн</option></select>
+                    <label class="form-label">Деңгейіңіз</label>
+                    <select name="level" class="form-select mb-3"><option>Бастапқы</option><option>Орташа</option><option>Жақсы сөйлеймін</option></select>
+                    <label class="form-label">Ыңғайлы уақыт</label>
+                    <select name="schedule" class="form-select mb-3"><option>Дүйсенбі/Сәрсенбі/Жұма — кешкі 19:00</option><option>Сейсенбі/Бейсенбі/Сенбі — таңғы 10:00</option><option>Жеке сабаққа бөлек уақыт таңдаймын</option></select>
+                    <label class="form-label">Мұғалім</label>
+                    <select name="teacher" class="form-select mb-3"><option>Айдана — сөйлесу практикасы</option><option>Мерей — грамматика</option><option>Назерке — beginner level</option></select>
+                    <textarea name="comment" rows="3" class="form-control" placeholder="Қосымша сұрақ немесе қалаған уақыт"></textarea>
+                </div>
+                <div class="modal-footer"><button class="btn btn-dark" type="submit">Өтінім жіберу</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('show.bs.modal', function (event) {
+    if (event.target.id === 'courseModal') {
+        const button = event.relatedTarget;
+        const language = button ? button.getAttribute('data-language') : '';
+        document.getElementById('courseLanguage').value = language;
+        document.getElementById('courseLanguageText').textContent = language;
+    }
+});
+</script>
+{% endblock %}

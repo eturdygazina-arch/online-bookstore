@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-6"><div class="card shadow auth-card"><div class="card-header bg-dark text-white"><h4 class="mb-0">Тіркелу</h4></div><div class="card-body"><form method="POST"><div class="mb-3"><label class="form-label">Атыңыз</label><input type="text" class="form-control" name="name" value="{{ request.args.get('name','') }}" required></div><div class="mb-3"><label class="form-label">Email</label><input type="email" class="form-control" name="email" value="{{ request.args.get('email','') }}" required></div><div class="mb-3"><label class="form-label">Құпиясөз</label><input type="password" class="form-control" name="password" required></div><button type="submit" class="btn btn-dark w-100">Тіркелу</button></form><p class="mt-3 text-center">Аккаунтыңыз бар ма? <a href="{{ url_for('login') }}">Кіру</a></p></div></div></div></div>
+{% endblock %}

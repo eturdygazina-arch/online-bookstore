@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4"><div><h1>Менің сертификаттарым</h1><p class="text-muted">Сатып алынған және қолданылған сертификаттар</p></div><a href="{{ url_for('index') }}#gift-certificate" class="btn btn-primary">Сертификат сатып алу</a></div>
+<div class="row g-4">{% for c in certificates %}<div class="col-md-6 col-lg-4"><div class="certificate-card"><div class="cert-top"><span>Zein Gift</span><strong>{{ c.code }}</strong></div><h3>{{ c.balance|format_price }}</h3><p>Бастапқы сома: {{ c.amount|format_price }}</p><p>Алушы: {{ c.receiver or current_user.name }}</p><span class="cert-status status-{{ c.status }}">{% if c.status=='purchased' %}Сатып алынды{% elif c.status=='sent' %}Жіберілді{% elif c.status=='delivered' %}Жеткізілді{% elif c.status=='used' %}Қолданылды{% else %}Белсенді{% endif %}</span></div></div>{% else %}<div class="empty-state text-center py-5"><i class="fas fa-gift fa-4x text-muted mb-3"></i><h4>Сертификат жоқ</h4></div>{% endfor %}</div>
+{% endblock %}

@@ -1,0 +1,618 @@
+:root {
+    --primary: #6C5CE7;
+    --primary-dark: #5b4bc4;
+    --secondary: #FD7E14;
+    --dark: #2D3436;
+    --light: #F8F9FA;
+    --success: #00B894;
+    --danger: #D63031;
+    --warning: #FDCB6E;
+    --gray: #636E72;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--light);
+    color: var(--dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Навигация */
+.navbar {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+    padding: 1rem 0;
+    transition: all 0.3s;
+}
+
+.navbar-brand {
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+}
+
+.nav-link {
+    color: var(--dark) !important;
+    font-weight: 500;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: var(--primary) !important;
+    transform: translateY(-2px);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 70%;
+}
+
+.search-form {
+    position: relative;
+}
+
+.search-form input {
+    border-radius: 50px;
+    padding-left: 1rem;
+    padding-right: 3rem;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s;
+}
+
+.search-form input:focus {
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+    border-color: var(--primary);
+}
+
+.search-form button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--gray);
+}
+
+/* Hero секция */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 30px;
+    padding: 4rem 2rem;
+    margin-bottom: 3rem;
+    color: white;
+    text-align: center;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+/* Секции */
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+/* Карточки книг */
+.book-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+}
+
+.book-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+}
+
+.book-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.book-card:hover img {
+    transform: scale(1.05);
+}
+
+.book-card-body {
+    padding: 1.25rem;
+}
+
+.book-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-author {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.book-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+}
+
+.book-rating {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Жанры */
+.genre-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    display: block;
+}
+
+.genre-card:hover {
+    transform: translateY(-3px);
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 10px 20px rgba(108, 92, 231, 0.2);
+}
+
+.genre-card i {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.genre-card h6 {
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Посты */
+.post-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s;
+}
+
+.post-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.post-book-img {
+    width: 70px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Корзина */
+.cart-table {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.cart-img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Профиль */
+.profile-card {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary);
+}
+
+.profile-bonuses {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 0.75rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+/* Отзывы */
+.review-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+/* Админ-панель */
+.admin-card {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.admin-card.warning {
+    background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+}
+
+.admin-card-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+}
+
+.admin-card-title {
+    font-weight: 600;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
+}
+
+.admin-card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.admin-card-link {
+    display: block;
+}
+
+/* Статусы заказов */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-собрано { background: #ffe0b2; color: #e65100; }
+.status-отправлено { background: #b3e5fc; color: #01579b; }
+.status-в пути { background: #c8e6c9; color: #1b5e20; }
+.status-получено { background: #d1c4e9; color: #311b92; }
+
+/* Страница оформления */
+.checkout-card, .order-summary {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Кнопки */
+.btn {
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+}
+
+/* Анимация перехода между страницами */
+.page-transition {
+    animation: pageFade 0.5s ease-out;
+}
+
+@keyframes pageFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Футер */
+.footer {
+    background: white;
+    padding: 2rem 0;
+    margin-top: 3rem;
+    box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+    
+    .book-card img {
+        height: 200px;
+    }
+    
+    .section-title {
+        font-size: 1.4rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+}
+/* Zein жаңартылған басты бет */
+:root {
+    --primary: #111111;
+    --primary-dark: #000000;
+    --secondary: #ff6b5f;
+    --soft: #f5f2ee;
+}
+
+.navbar-brand {
+    background: none;
+    color: #111 !important;
+    letter-spacing: -0.04em;
+}
+
+.zein-hero {
+    border-radius: 34px;
+    background: linear-gradient(120deg, #f6f1eb, #ffffff);
+    min-height: 430px;
+    padding: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    box-shadow: 0 16px 50px rgba(0,0,0,.06);
+}
+
+.hero-label {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #111;
+    color: #fff;
+    border-radius: 999px;
+    font-size: .85rem;
+    margin-bottom: 16px;
+}
+
+.zein-hero h1 {
+    max-width: 560px;
+    font-size: clamp(2.2rem, 5vw, 4.4rem);
+    font-weight: 800;
+    line-height: .95;
+    letter-spacing: -.06em;
+    margin-bottom: 18px;
+}
+
+.zein-hero p { max-width: 520px; font-size: 1.1rem; color: #555; }
+
+.hero-books { position: relative; width: 420px; height: 330px; }
+.hero-books img {
+    position: absolute;
+    width: 170px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.22);
+    transform: perspective(700px) rotateY(-18deg);
+}
+.hero-books img:nth-child(1){ left: 20px; top: 55px; transform: perspective(700px) rotateY(-22deg) rotateZ(-8deg); }
+.hero-books img:nth-child(2){ left: 130px; top: 10px; z-index: 2; transform: perspective(700px) rotateY(-10deg); }
+.hero-books img:nth-child(3){ left: 255px; top: 65px; transform: perspective(700px) rotateY(16deg) rotateZ(7deg); }
+
+.feature-slide {
+    background: #fff;
+    border-radius: 28px;
+    padding: 44px;
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    box-shadow: 0 10px 35px rgba(0,0,0,.06);
+}
+.feature-slide h2 { font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 800; letter-spacing: -.05em; }
+.feature-slide p { color: #666; font-size: 1.05rem; max-width: 480px; }
+.feature-books-stack { position: relative; width: 420px; height: 280px; }
+.feature-books-stack img {
+    position: absolute;
+    width: 150px;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 18px 38px rgba(0,0,0,.2);
+}
+.feature-books-stack img:nth-child(1){ left: 20px; top: 28px; transform: rotate(-8deg); }
+.feature-books-stack img:nth-child(2){ left: 135px; top: 0; z-index: 2; }
+.feature-books-stack img:nth-child(3){ left: 250px; top: 28px; transform: rotate(8deg); }
+
+.book-row-scroll { display: flex; gap: 22px; overflow-x: auto; padding: 8px 4px 20px; scroll-snap-type: x mandatory; }
+.book-scroll-item { min-width: 225px; scroll-snap-align: start; }
+.zein-book-card { border: 1px solid #eee; border-radius: 18px; }
+.zein-book-card img { height: 285px; object-fit: contain; padding: 18px; background: #fff; }
+.old-price { color: #999; text-decoration: line-through; font-size: .85rem; }
+
+.bundle-section {
+    background: #111;
+    color: #fff;
+    border-radius: 34px;
+    padding: 42px;
+}
+.bundle-card {
+    background: #fff;
+    color: #111;
+    border-radius: 26px;
+    padding: 26px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-height: 280px;
+}
+.bundle-images { position: relative; width: 210px; height: 220px; flex: 0 0 210px; }
+.bundle-images img { position: absolute; width: 95px; height: 145px; object-fit: cover; border-radius: 8px; box-shadow: 0 14px 28px rgba(0,0,0,.25); }
+.bundle-images img:nth-child(1){ left: 0; top: 42px; transform: rotate(-11deg); }
+.bundle-images img:nth-child(2){ left: 58px; top: 10px; z-index: 2; }
+.bundle-images img:nth-child(3){ left: 118px; top: 48px; transform: rotate(11deg); }
+.bundle-badge { display: inline-block; background: #ffebe8; color: #d43f32; border-radius: 999px; padding: 8px 14px; font-weight: 700; margin-bottom: 10px; }
+
+.genre-showcase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; }
+.genre-showcase-card { text-decoration: none; color: #111; background: #fff; border-radius: 22px; padding: 18px; text-align: center; border: 1px solid #eee; transition: .25s; }
+.genre-showcase-card:hover { transform: translateY(-6px); color: #111; box-shadow: 0 14px 30px rgba(0,0,0,.08); }
+.genre-mini-books { height: 125px; position: relative; margin-bottom: 14px; }
+.genre-mini-books img { width: 62px; height: 95px; object-fit: cover; position: absolute; top: 12px; left: 50%; border-radius: 6px; box-shadow: 0 10px 20px rgba(0,0,0,.15); }
+.genre-mini-books img:nth-child(1){ transform: translateX(-80%) rotate(-10deg); }
+.genre-mini-books img:nth-child(2){ transform: translateX(-50%); z-index: 2; }
+.genre-mini-books img:nth-child(3){ transform: translateX(-20%) rotate(10deg); }
+
+.publisher-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; }
+.publisher-card { background: #fff; border: 1px solid #eee; border-radius: 18px; padding: 24px; text-align: center; color: #111; text-decoration: none; font-weight: 800; box-shadow: 0 8px 20px rgba(0,0,0,.04); transition: .25s; }
+.publisher-card:hover { color: #fff; background: #111; transform: translateY(-4px); }
+
+.certificate-section { display: flex; align-items: center; gap: 50px; background: #fff; border-radius: 32px; padding: 42px; box-shadow: 0 12px 35px rgba(0,0,0,.06); }
+.certificate-visual { position: relative; width: 330px; height: 210px; flex: 0 0 330px; }
+.gift-card { position: absolute; width: 210px; height: 115px; border-radius: 14px; background: #ff5f55; color: #fff; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 800; box-shadow: 0 22px 35px rgba(0,0,0,.18); }
+.gift-card-1 { left: 20px; top: 45px; transform: rotate(-16deg); }
+.gift-card-2 { left: 115px; top: 35px; transform: rotate(14deg); background: #fff; color: #ff5f55; border: 2px dashed #ff5f55; }
+
+.language-section { background: #242424; color: #fff; border-radius: 34px; padding: 42px; }
+.language-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,.55); margin-bottom: 32px; padding-bottom: 20px; }
+.language-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 22px; }
+.language-card { background: #fff; color: #111; border-radius: 18px; padding: 24px; min-height: 160px; position: relative; overflow: hidden; }
+.language-card:after { content: ''; position: absolute; right: -30px; bottom: -30px; width: 140px; height: 140px; background: #f0f0f0; border-radius: 50%; }
+.language-card h4 { font-weight: 800; position: relative; z-index: 1; }
+.language-card p, .language-card button, .language-card a { position: relative; z-index: 1; }
+
+.status-badge { background: #111; color: #fff; }
+
+@media (max-width: 768px) {
+    .zein-hero, .feature-slide, .certificate-section, .bundle-card { flex-direction: column; padding: 28px; }
+    .hero-books, .feature-books-stack, .certificate-visual { width: 100%; transform: scale(.85); }
+    .language-head { display: block; }
+}
+
+/* --- Zein final additions --- */
+.lang-switch { display:flex; gap:6px; align-items:center; }
+.lang-btn { padding:6px 10px; border-radius:999px; text-decoration:none; color:#111; border:1px solid #ddd; font-size:.85rem; background:#fff; }
+.lang-btn.active, .lang-btn:hover { background:#111; color:#fff; }
+#pageCurtain { position:fixed; inset:0; z-index:9999; pointer-events:none; background:linear-gradient(110deg,#fff8ef,#f2e6d8); transform:translateX(-100%); display:flex; align-items:center; justify-content:center; color:#111; box-shadow:inset 0 0 0 1px rgba(0,0,0,.04); }
+#pageCurtain.active { animation: bookCurtain .72s ease-in-out forwards; }
+.curtain-book { display:flex; gap:14px; align-items:center; font-size:2rem; font-weight:800; letter-spacing:-.04em; }
+.curtain-book i { font-size:2.4rem; animation: flipBook 1s ease-in-out infinite alternate; }
+@keyframes bookCurtain { 0%{transform:translateX(-100%)} 40%{transform:translateX(0)} 60%{transform:translateX(0)} 100%{transform:translateX(100%)} }
+@keyframes flipBook { from{transform:rotateY(0)} to{transform:rotateY(28deg)} }
+.page-transition { animation: pageSoftIn .35s ease-out; }
+@keyframes pageSoftIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
+.discount-badge { position:absolute; left:12px; top:12px; z-index:3; background:#ff4d3d; color:#fff; font-weight:800; font-size:.8rem; border-radius:999px; padding:6px 10px; box-shadow:0 8px 18px rgba(255,77,61,.28); }
+.zein-book-card { position:relative; overflow:hidden; }
+.compact-book-card img, .similar-books img { max-height:230px !important; object-fit:contain !important; }
+.zein-popup { border-radius:24px; border:0; box-shadow:0 30px 80px rgba(0,0,0,.22); }
+.notification-item { background:#fff; }
+
+
+/* final polish */
+.book-card img, .zein-book-card img { object-fit: contain !important; background:#fffaf4; }
+.book-card-sm, .similar-compact { height: 100%; border:1px solid #eee; border-radius:14px; overflow:hidden; background:#fff; }
+.book-card-sm img, .similar-compact img { width:100%; height:150px !important; object-fit:contain !important; padding:10px; background:#fffaf4; }
+.book-thumbs { display:flex; gap:10px; flex-wrap:wrap; }
+.book-thumbs img { width:62px; height:86px; object-fit:contain; border:1px solid #ddd; border-radius:8px; padding:4px; cursor:pointer; background:#fff; }
+.book-thumbs img:hover { border-color:#111; transform:translateY(-2px); }
+#pageCurtain.active { animation: bookCurtain .55s ease-in-out forwards; }
+.curtain-book span::after { content:' бет ауысуда'; font-size:1rem; margin-left:6px; font-weight:500; }
+.back-soft { border-radius:999px; }
+.notification-dot { background:#ffcf33; color:#111; }
+@media (max-width: 768px){ .book-card img, .zein-book-card img { height:220px !important; } }
+
+
+/* Final polish */
+#pageCurtain { background: rgba(255,248,238,.88) !important; color:#6C5CE7; }
+#pageCurtain.active { backdrop-filter: blur(2px); }
+.curtain-book { color:#6C5CE7 !important; }
+.book-card img, .similar-book-card img, .book-detail-cover, .book-image { background:#f3f1ee; object-fit: contain !important; }
+.book-card img { height: 270px !important; padding: 12px; }
+.similar-books .book-card img, .same-author .book-card img { height: 210px !important; }
+.notification-card.unread { border-left: 5px solid #FDCB6E; background: #fffaf0; }
+.certificate-check-box { background:#f8f6ff; border:1px solid #ddd7ff; border-radius:16px; padding:1rem; }
+.certificate-card { min-height:230px; border-radius:24px; padding:1.4rem; color:white; background:linear-gradient(135deg,#6C5CE7,#FD7E14); box-shadow:0 18px 40px rgba(108,92,231,.25); position:relative; overflow:hidden; }
+.certificate-card:after { content:""; position:absolute; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,.18); right:-50px; bottom:-50px; }
+.cert-top { display:flex; justify-content:space-between; gap:1rem; margin-bottom:2rem; }
+.cert-status { display:inline-block; background:rgba(255,255,255,.22); border:1px solid rgba(255,255,255,.35); padding:.35rem .7rem; border-radius:999px; font-weight:700; }
+.pagination .page-link { border-radius:12px; margin:0 3px; }
+@media (max-width:768px){ .book-card img{height:220px!important;} .hero-section h1{font-size:2rem;} }

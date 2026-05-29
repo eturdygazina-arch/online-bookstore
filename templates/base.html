@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zein — онлайн кітап дүкені</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="pageCurtain"><div class="curtain-book"><i class="fas fa-book-open"></i><span>Zein</span></div></div>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}"><i class="fas fa-book-open"></i> Zein</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">Басты бет</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('catalog') }}">Каталог</a></li>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class="fas fa-crown"></i> Админ</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_orders') }}">Тапсырыстар</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_certificates') }}">Сертификаттар</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('favorites') }}"><i class="fas fa-heart"></i> Таңдаулы <span class="badge bg-danger rounded-pill">{{ get_favorites_count(current_user.id) }}</span></a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('cart') }}"><i class="fas fa-shopping-cart"></i> Себет <span class="badge bg-primary rounded-pill">{{ get_cart_count(current_user.id) }}</span></a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('orders') }}"><i class="fas fa-truck"></i> Тапсырыстар</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('notifications') }}"><i class="fas fa-bell"></i> Хабарламалар {% if get_notifications_count(current_user.id) > 0 %}<span class="badge bg-warning text-dark rounded-pill">{{ get_notifications_count(current_user.id) }}</span>{% endif %}</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="fas fa-user"></i> Профиль</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Шығу</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Кіру</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Тіркелу</a></li>
+                    {% endif %}
+                </ul>
+                <form class="d-flex search-form" action="{{ url_for('catalog') }}" method="GET">
+                    <input class="form-control" type="search" name="search" placeholder="Кітап іздеу..." aria-label="Search">
+                    <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-transition">
+        <div class="container my-5 pt-5">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                            {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer"><div class="container"><div class="row"><div class="col-md-4"><h5><i class="fas fa-book-open me-2"></i>Zein</h5><p>Қазақстан бойынша жеткізілетін онлайн кітап дүкені</p></div><div class="col-md-4"><h6>Байланыс</h6><p><i class="fas fa-phone me-2"></i>+7 (700) 123-45-67<br><i class="fas fa-envelope me-2"></i>info@zein.kz</p></div><div class="col-md-4"><h6>Әлеуметтік желі</h6><a href="#" class="me-3"><i class="fab fa-instagram fa-lg"></i></a><a href="#" class="me-3"><i class="fab fa-telegram fa-lg"></i></a><a href="#"><i class="fab fa-whatsapp fa-lg"></i></a></div></div><hr><p class="text-center mb-0">&copy; 2026 Zein. Барлық құқықтар қорғалған.</p></div></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+{% if not current_user.is_authenticated %}
+<div class="modal fade" id="welcomeDiscountModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content zein-popup"><div class="modal-header border-0"><h5 class="modal-title">Алғашқы тапсырысқа −20%</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p>Атыңыз бен email енгізіп, тіркелу бетіне өтіңіз.</p><form action="{{ url_for('register') }}" method="GET"><input name="name" class="form-control mb-2" placeholder="Атыңыз"><input name="email" type="email" class="form-control mb-3" placeholder="Email"><button class="btn btn-dark w-100">Тіркелу</button></form></div></div></div></div>
+{% endif %}
+<div class="modal fade" id="countryModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content zein-popup"><div class="modal-header border-0"><h5 class="modal-title">Еліңізді таңдаңыз</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><label class="form-label">Жеткізу елі</label><select class="form-select mb-3" id="countrySelect"><option>Қазақстан</option><option>Қырғызстан</option><option>Өзбекстан</option></select><label class="form-label">Валюта</label><select class="form-select mb-3" id="currencySelect"><option>KZT — ₸</option><option>USD — $</option></select><button class="btn btn-dark w-100" data-bs-dismiss="modal">Сақтау</button></div></div></div></div>
+{% block scripts %}{% endblock %}
+</body>
+</html>
